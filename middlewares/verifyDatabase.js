@@ -1,4 +1,3 @@
-const { response } = require("express");
 
 const Supplier = require('../models/supplier.model');
 const Product = require('../models/product.model');
@@ -35,8 +34,18 @@ const existSupplierWithThisId = async ( id='') => {
     return true;
 }
 
+const existsProduct = async ( id='') => {
+
+    const existsProduct = await Product.findById(id);
+    if(!existsProduct){
+        throw new Error(`There is no product with that id`);
+    }
+    return true;
+}
+
 module.exports = {
     emailAlreadyInUse,
     notRepeatProduct,
+    existsProduct,
     existSupplierWithThisId
 };
