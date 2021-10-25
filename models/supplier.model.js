@@ -40,7 +40,7 @@ supplierSchema.methods.toJSON = function () {
     const { password , _id , avatar, ...data} = this.toObject();//Esto genera la instancia con el valor respectivo
     //Con el operador rest , los otros campos se ponen dentro de un objeto llamado ahora : user
     return {
-        uid : _id,
+        sid : _id,
         ...data
     };
 }

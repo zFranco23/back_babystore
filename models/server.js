@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const authRoutes = require('../routes/auth.routes');
 const supplierRoutes = require('../routes/supplier.routes');
 const productRoutes = require('../routes/product.routes');
+const clientRoutes = require('../routes/client.routes');
 
 //Connection
 const connectDB = require('../connection/db.connection.js');
@@ -20,7 +21,8 @@ class Server {
         this.paths = {
             auth : '/api/auth',
             supplier : '/api/supplier',
-            product : '/api/product'
+            product : '/api/product',
+            client : '/api/client'
         }
 
         //Conection
@@ -48,6 +50,7 @@ class Server {
         this.app.use(this.paths.auth , authRoutes );
         this.app.use(this.paths.supplier , supplierRoutes );
         this.app.use(this.paths.product , productRoutes );
+        this.app.use(this.paths.client , clientRoutes );
     }
 
     listen(){

@@ -2,6 +2,8 @@ const { response } = require("express");
 const bcrypt = require('bcryptjs')
 
 const Supplier = require('../models/supplier.model');
+const Client = require('../models/client.model');
+
 const generateJWT = require("../helpers/generateJWT");
 
 
@@ -9,35 +11,44 @@ const authLogin = async ( req, res = response) => {
     try{
 
         const { email , password } = req.body;
+        const { collection } = req.params;
 
-        const supplier = await Supplier.findOne({ email });
+        let model;
+        switch(collection){
+            case 'supplier':
+                model = await Supplier.findOne({ email });
+                break;
+            case 'client' :
+                model = await Client.findOne({ email });
+                break;
+        }
 
-        if(!supplier){
+        if(!model){
             return res.status(400).json({
                 ok : false,
-                mssg : 'Supplier || Password incorrect - Email'
+                mssg : 'User || Password incorrect - Email'
             })
         }
 
-        if(!supplier.active){
+        if(!model.active){
             return res.status(400).json({
                 ok : false,
-                mssg : 'Supplier || Password incorrect - Disabled'
+                mssg : 'User || Password incorrect - Disabled'
             })
         }
 
-        const isSamePassword = bcrypt.compareSync(password, supplier.password);
+        const isSamePassword = bcrypt.compareSync(password, model.password);
 
         if(!isSamePassword){
             return res.status(400).json({
                 ok : false,
-                mssg : 'Supplier || Password incorrect - Password'
+                mssg : 'User || Password incorrect - Password'
             })
         }
 
         //Ya pasó la autenticacion , devolver token
 
-        const token = await generateJWT(supplier._id);
+        const token = await generateJWT(model._id);
 
         res.json({
             ok : true,

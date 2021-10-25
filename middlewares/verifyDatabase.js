@@ -1,11 +1,22 @@
 
 const Supplier = require('../models/supplier.model');
 const Product = require('../models/product.model');
+const Client = require('../models/client.model');
 
 
-const emailAlreadyInUse = async (  email='' ) =>{
+const emailAlreadyInUse = async (  email='' , collection='') =>{
     
-    const exists = await Supplier.findOne({ email });
+    let exists;
+    switch (collection) {
+        case 'supplier':
+            exists = await Supplier.findOne({ email });
+            break;
+        case 'client' :    
+            exists = await Client.findOne({ email });
+            break;
+        default:
+            break;
+    }
 
     if(exists){
         throw new Error(`Email ${email} already in use`);
@@ -43,9 +54,23 @@ const existsProduct = async ( id='') => {
     return true;
 }
 
+const allowedCollections = ( collection='' , collections = [ ]) => {
+
+    const included = collections.includes(collection);
+    if(!included){
+        throw new Error(`Collection ${collection} not allowed - ${collections}`);
+    }
+
+    //Como recibo otros argumentos
+    //ya no se da el return implícito
+
+    return true;
+}
+
 module.exports = {
     emailAlreadyInUse,
     notRepeatProduct,
     existsProduct,
+    allowedCollections,
     existSupplierWithThisId
 };
