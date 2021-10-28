@@ -38,6 +38,26 @@ const addSupplier = async( req , res=response) => {
     }
 }
 
+const getSupplier = async ( req , res = response) => {
+    try{
+
+        const id = req.supplier._id;
+
+        const supplier = await Supplier.findById(id);
+
+        res.json({
+            ok : true,
+            supplier
+        })
+        
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            ok : false,
+            message : err.message
+        })
+    }
+}
 
 const getSuppliers = async ( req , res = response ) => {
 
@@ -71,5 +91,6 @@ const getSuppliers = async ( req , res = response ) => {
 
 module.exports = {
     addSupplier,
+    getSupplier,
     getSuppliers
 }

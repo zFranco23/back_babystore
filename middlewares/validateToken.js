@@ -17,7 +17,7 @@ const validateToken = async ( req , res , next) => {
 
     try{
 
-        const { uid } = jwt.verify(token , process.env.SECRET_JWT_TOKEN);
+        const { uid } = jwt.verify(token , process.env.SECRET_JWT_TOKEN_SUPPLIER);
 
         const supplier = await Supplier.findById(uid); 
         //Si el supplier es eliminado fisicamente de la db pero aun mantiene el token

@@ -1,5 +1,6 @@
 const { response } = require("express");
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken');
 
 const Supplier = require('../models/supplier.model');
 const Client = require('../models/client.model');
@@ -14,11 +15,15 @@ const authLogin = async ( req, res = response) => {
         const { collection } = req.params;
 
         let model;
+        let signValidation;
+
         switch(collection){
             case 'supplier':
+                signValidation = process.env.SECRET_JWT_TOKEN_SUPPLIER ;
                 model = await Supplier.findOne({ email });
                 break;
             case 'client' :
+                signValidation = process.env.SECRET_JWT_TOKEN_CLIENT ;
                 model = await Client.findOne({ email });
                 break;
         }
@@ -48,7 +53,7 @@ const authLogin = async ( req, res = response) => {
 
         //Ya pasó la autenticacion , devolver token
 
-        const token = await generateJWT(model._id);
+        const token = await generateJWT(model._id , signValidation);
 
         res.json({
             ok : true,
@@ -66,4 +71,57 @@ const authLogin = async ( req, res = response) => {
     }
 }
 
-module.exports = authLogin;
+const authValidate = ( req , res=response) => {
+    try{
+        
+        const token = req.header('Bearer');
+        const { collection } = req.params;
+
+        if(!token){
+            //Unauthorized
+            return res.status(401).json({
+                ok : false,
+                mssg : 'Token left'
+            })
+        }
+
+        let secret;
+        switch (collection) {
+            case 'supplier':
+                secret = process.env.SECRET_JWT_TOKEN_SUPPLIER;
+                break;
+           case 'client':
+                secret = process.env.SECRET_JWT_TOKEN_CLIENT;
+                break;
+        }
+
+
+        const val = jwt.verify(token, secret);
+
+        //Si existe , si esta mal formateado o no expiró , dispara el error
+        if(val){
+            return res.json({
+                ok : true,
+                mssg : 'Authenticated',
+                token
+            })
+        }else{
+            return res.status(500).json({
+                ok : true,
+                mssg : 'Error'
+            })
+        }
+
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            ok : false,
+            mssg : 'Invalid or expired token'
+        })
+    }
+}
+
+module.exports = {
+    authLogin,
+    authValidate
+};
