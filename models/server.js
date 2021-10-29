@@ -1,12 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const fileUpload = require('express-fileupload');
 
 //Routes
 const authRoutes = require('../routes/auth.routes');
 const supplierRoutes = require('../routes/supplier.routes');
 const productRoutes = require('../routes/product.routes');
 const clientRoutes = require('../routes/client.routes');
+const uploadRoutes = require('../routes/uploads.routes');
 
 //Connection
 const connectDB = require('../connection/db.connection.js');
@@ -22,7 +24,8 @@ class Server {
             auth : '/api/auth',
             supplier : '/api/supplier',
             product : '/api/product',
-            client : '/api/client'
+            client : '/api/client',
+            upload : '/api/uploads',
         }
 
         //Conection
@@ -44,6 +47,11 @@ class Server {
         this.app.use(cors());
         this.app.use( express.json());
         this.app.use( morgan('dev') );
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/tmp/',
+            createParentPath : true
+        }));
     }
 
     routes(){
@@ -51,6 +59,7 @@ class Server {
         this.app.use(this.paths.supplier , supplierRoutes );
         this.app.use(this.paths.product , productRoutes );
         this.app.use(this.paths.client , clientRoutes );
+        this.app.use(this.paths.upload , uploadRoutes );
     }
 
     listen(){

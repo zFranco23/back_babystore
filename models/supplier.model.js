@@ -37,7 +37,7 @@ const supplierSchema = new Schema({
 
 //Entonces aplicaria para cuando yo quiera enviar el json por respuesta
 supplierSchema.methods.toJSON = function () {
-    const { password , _id , avatar, ...data} = this.toObject();//Esto genera la instancia con el valor respectivo
+    const { password , _id , ...data} = this.toObject();//Esto genera la instancia con el valor respectivo
     //Con el operador rest , los otros campos se ponen dentro de un objeto llamado ahora : user
     return {
         sid : _id,
