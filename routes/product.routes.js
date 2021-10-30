@@ -35,12 +35,15 @@ router
         validateToken,
         check('idProduct', 'That id is not valid ').isMongoId(),
         check('idProduct').custom(existsProduct),
+        validateFields,
         validateSupplierProduct,
-        validateFields
      ],updateProductOfSupplier)
 
      .patch('/supplier/:idProduct' , [
         validateToken,
+        check('idProduct', 'That id is not valid ').isMongoId(),
+        check('idProduct').custom(existsProduct),
+        validateFields,
         validateSupplierProduct,
      ], changeStateProductOfSupplier)
 

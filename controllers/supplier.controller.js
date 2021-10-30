@@ -71,6 +71,7 @@ const getSuppliers = async ( req , res = response ) => {
             Supplier.find( query )
                 .skip(Number(skip)) 
                 .limit(Number(limit))
+                .populate('store', 'name_store')
         ])
 
         res.json({

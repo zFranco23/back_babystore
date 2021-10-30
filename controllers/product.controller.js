@@ -91,11 +91,10 @@ const addProduct = async ( req , res = response ) => {
 
 const updateProductOfSupplier = async (req , res= response )=> {
     try{
-        //TODO : ACTUALIZAR IMAGEN CUANDO SE INTEGRE CLOUDINARY
+        //TODO: ACTUALIZAR IMAGEN CUANDO SE INTEGRE CLOUDINARY
         const { supplier , active , img , available , ...infoProduct} = req.body;
-        const { idProduct } = req.params;
 
-        const product = await Product.findById(idProduct);
+        const product = req.product;
 
         //Mapear los campos
         const arrayKeys =Object.keys(infoProduct);
@@ -111,7 +110,7 @@ const updateProductOfSupplier = async (req , res= response )=> {
                 product.promoPrice = product.price;
             }
         }else{
-            delete product.promoPrice;
+            delete product.promoPrice;//aunque borre ,existe en el modelo de la bd
         }
 
         const updated = await Product.findByIdAndUpdate( idProduct , product, { new : true } );
@@ -135,10 +134,8 @@ const changeStateProductOfSupplier = async ( req , res = response) => {
     try{
         
         const { active , available } = req.body;
-        const { idProduct } = req.params;
 
-        //Traer al producto y actualizar
-        const product = await Product.findById(idProduct);
+        const product = req.product;
         product.active = active;
         product.available = available;
 

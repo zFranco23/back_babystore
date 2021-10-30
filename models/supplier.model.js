@@ -3,11 +3,11 @@ const { Schema, model } = require('mongoose');
 const supplierSchema = new Schema({
 
     name : {
-        type : 'String',
+        type : String,
         required : [ true , 'Name of supplier is required']
     },
     email : {
-        type : 'String',
+        type : String,
         required : [true , 'Email is mandatory'],
         unique : true //Mongo te avisa
     },
@@ -18,6 +18,10 @@ const supplierSchema = new Schema({
     avatar : {
         type : String,
         default :'',
+    },
+    store : { 
+        type : Schema.Types.ObjectId,
+        ref: 'Store' 
     },
     active :{
         type : Boolean,

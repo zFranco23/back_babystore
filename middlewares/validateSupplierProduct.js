@@ -15,6 +15,8 @@ const validateSupplierProduct = async ( req, res , next) =>{
         })
     }
 
+    req.product = product;
+
     next();
 }
 

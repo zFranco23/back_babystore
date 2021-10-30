@@ -2,6 +2,7 @@
 const Supplier = require('../models/supplier.model');
 const Product = require('../models/product.model');
 const Client = require('../models/client.model');
+const Store = require('../models/store.model');
 
 
 const emailAlreadyInUse = async (  email='' , collection='') =>{
@@ -54,6 +55,16 @@ const existsProduct = async ( id='') => {
     return true;
 }
 
+const existsStore = async ( id='') => {
+
+    const existsStore = await Store.findById(id);
+    if(!existsStore){
+        throw new Error(`There is no store with that id`);
+    }
+    return true;
+}
+
+
 const allowedCollections = ( collection='' , collections = [ ]) => {
 
     const included = collections.includes(collection);
@@ -71,6 +82,7 @@ module.exports = {
     emailAlreadyInUse,
     notRepeatProduct,
     existsProduct,
+    existsStore,
     allowedCollections,
     existSupplierWithThisId
 };

@@ -8,6 +8,7 @@ const authRoutes = require('../routes/auth.routes');
 const supplierRoutes = require('../routes/supplier.routes');
 const productRoutes = require('../routes/product.routes');
 const clientRoutes = require('../routes/client.routes');
+const storeRoutes = require('../routes/store.routes');
 const uploadRoutes = require('../routes/uploads.routes');
 
 //Connection
@@ -25,6 +26,7 @@ class Server {
             supplier : '/api/supplier',
             product : '/api/product',
             client : '/api/client',
+            store : '/api/store',
             upload : '/api/uploads',
         }
 
@@ -59,6 +61,7 @@ class Server {
         this.app.use(this.paths.supplier , supplierRoutes );
         this.app.use(this.paths.product , productRoutes );
         this.app.use(this.paths.client , clientRoutes );
+        this.app.use(this.paths.store , storeRoutes );
         this.app.use(this.paths.upload , uploadRoutes );
     }
 
