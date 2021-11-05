@@ -5,6 +5,7 @@ const Client = require('../models/client.model');
 const Store = require('../models/store.model');
 
 
+//CUSTOM MIDDLEWARE
 const emailAlreadyInUse = async (  email='' , collection='') =>{
     
     let exists;
@@ -78,11 +79,48 @@ const allowedCollections = ( collection='' , collections = [ ]) => {
     return true;
 }
 
+
+
+//MIDDLEWARE PROPIOS
+const existEntityWithThisEmail = async ( req , res= response , next) => {
+
+    const { collection } = req.params;
+    const { email } = req.body;
+    
+    let existsModel ;
+    switch(collection){
+        case 'supplier' : 
+            existsModel = await Supplier.findOne({ email });
+            break;
+        case 'client' : 
+            existsModel = await Client.findOne({ email });
+            break;
+    }
+
+    if(!existsModel){
+        return res.status(400).json({
+            ok : false,
+            mssg : 'User || Password incorrect - Email'
+        })
+    }
+
+    if(!existsModel.active){
+        return res.status(400).json({
+            ok : false,
+            mssg : 'User || Password incorrect - Disabled'
+        })
+    }
+
+    req.entity = existsModel;
+
+    next();
+}
 module.exports = {
     emailAlreadyInUse,
     notRepeatProduct,
     existsProduct,
     existsStore,
     allowedCollections,
-    existSupplierWithThisId
+    existSupplierWithThisId,
+    existEntityWithThisEmail
 };

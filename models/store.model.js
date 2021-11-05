@@ -40,7 +40,7 @@ const storeSchema = new Schema({
     },
     foundation : Date
 },{
-    versionKey : 0,
+    versionKey : false,
 })
 
 module.exports = model('Store', storeSchema);

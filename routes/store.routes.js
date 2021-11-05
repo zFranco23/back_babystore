@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { check } = require('express-validator');
 
 
-const validateToken = require('../middlewares/validateToken');
+const { validateToken } = require('../middlewares/validateToken');
 const validateFields = require('../middlewares/validateFields');
 const validateSupplierStore = require('../middlewares/validateSupplierStore');
 const { existsStore } = require('../middlewares/verifyDatabase');

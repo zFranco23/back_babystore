@@ -1,6 +1,6 @@
 const { Router } = require('express');
 
-const validateToken = require('../middlewares/validateToken');
+const { validateToken } = require('../middlewares/validateToken');
 
 const { updateProfileImage } = require('../controllers/uploads.controller');
 

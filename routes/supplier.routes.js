@@ -4,7 +4,7 @@ const { check } = require('express-validator');
 
 const { emailAlreadyInUse } = require('../middlewares/verifyDatabase');
 const validateFields = require('../middlewares/validateFields');
-const validateToken = require('../middlewares/validateToken');
+const { validateToken } = require('../middlewares/validateToken');
 
 const { addSupplier, getSupplier, getSuppliers } = require('../controllers/supplier.controller');
 

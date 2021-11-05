@@ -16,4 +16,7 @@ const generateJWT = ( uid='' , signValidation) => {
     }) 
 }
 
-module.exports = generateJWT;
+
+module.exports = { 
+    generateJWT 
+};
