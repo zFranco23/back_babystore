@@ -2,14 +2,16 @@ const { Router }  = require('express');
 const { check } = require('express-validator');
 
 const { allowedCollections , existEntityWithThisEmail , validExistModel} = require('../middlewares/verifyDatabase');
+const { validateTokenMultiple , validateTokenForgot , validateTokenForgotParams } = require('../middlewares/validateToken');
 const validateFields = require('../middlewares/validateFields');
-const { validateTokenMultiple , validateTokenForgot } = require('../middlewares/validateToken');
+const checkSamePassword = require('../middlewares/validatePassword');
 
 const { 
     authLogin,
     authorizeResetPassword,
     authValidate, 
-    forgotPassword
+    forgotPassword,
+    resetPassword
 } = require('../controllers/auth.controller');
 
 const router = Router();
@@ -34,7 +36,7 @@ router
 
     //Este endpoint es para verificar si aun puede usar para cambiar la cuenta
     .get('/reset_password/:token/:id', [
-        validateTokenForgot
+        validateTokenForgotParams
     ] ,authorizeResetPassword )
 
     .post('/forgot_password/:collection' , [ 
@@ -44,6 +46,15 @@ router
         validateFields,
         existEntityWithThisEmail
     ] , forgotPassword)
+
+    .post('/reset_password/:collection' , [
+        check('collection').custom( col => allowedCollections(col, ['client','supplier'])),
+        check('password' , 'Password is mandatory').not().isEmpty(),
+        check('password' , 'Password must be at least 5 characters').isLength( { min : 5}),
+        check('confirm_password').custom( (password , { req }) =>  checkSamePassword( password, req ) ),
+        validateFields,
+        validateTokenForgot
+    ] , resetPassword ) 
 
 
 module.exports = router;

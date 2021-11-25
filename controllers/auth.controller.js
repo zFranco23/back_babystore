@@ -1,6 +1,6 @@
 const { response } = require("express");
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 
 const Supplier = require('../models/supplier.model');
 const Client = require('../models/client.model');
@@ -126,12 +126,52 @@ const authorizeResetPassword = ( req , res=response) => {
     try{
 
         //TODO: agregar la validacion por cliente, por ahora solo está por supplier
+        //TODO: expiracion maximo 15 minutos
         // const { token } = req.params;
 
-        const supplier = req.supplier;
+        const { email } = req.supplier;
         res.json({
             ok : true,
-            supplier
+            state :'A',
+            email 
+        })
+
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            ok : false,
+            state : 'E'
+        })
+    }
+}
+
+const resetPassword = async ( req , res = response) => {
+    try{
+
+        const entity = req.entity;
+
+        const { collection } = req.params;
+        const { password } = req.body;
+
+        const salt = bcrypt.genSaltSync(10);
+        const hash = bcrypt.hashSync(password, salt);
+        entity.password = hash;
+
+        let model;
+        switch( collection) {
+            case 'supplier' :
+                model = Supplier;
+                break;
+            case 'client' :
+                model = Client;
+                break;
+        }
+
+        const user = await model.findByIdAndUpdate(entity._id, entity , { new : true});
+
+        res.json({
+            ok : true,
+            mssg : 'Password updated'
         })
 
     }catch(err){
@@ -147,5 +187,6 @@ module.exports = {
     authLogin,
     authValidate,
     authorizeResetPassword,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 };

@@ -162,7 +162,7 @@ const validateTokenMultiple = async ( req , res , next ) => {
     }
 } 
 
-const validateTokenForgot = async ( req , res = response , next) => {
+const validateTokenForgotParams = async ( req , res = response , next) => {
 
     const { token , id } = req.params;
     if(!token){
@@ -194,6 +194,59 @@ const validateTokenForgot = async ( req , res = response , next) => {
         console.log(err);
         res.status(401).json({
             ok : false,
+            state :'E',
+            mssg : 'Invalid or expired token'
+        })
+    }   
+}
+const validateTokenForgot= async ( req , res = response , next) => {
+
+    const token = req.header('Bearer');
+
+    const { uid } = req.query;// ?uid = a832aasdasd
+    const { collection } = req.params;
+
+    if(!token){
+        //Unauthorized
+        return res.status(401).json({
+            ok : false,
+            mssg : 'Token left'
+        })
+    }
+
+    try{
+        let model;
+        switch(collection) {
+            case 'supplier':
+                model = Supplier;
+                break;
+            case 'client' :
+                model = Client;
+                break;
+        }
+
+        const entity = await model.findById(uid);
+
+        let signature;
+        switch(collection) {
+            case 'supplier':
+                signature = process.env.SECRET_JWT_TOKEN_SUPPLIER;
+                break;
+            case 'client' :
+                signature = process.env.SECRET_JWT_TOKEN_CLIENT;
+                break;
+        }
+
+        signature = signature + entity.password;
+        const val = jwt.verify(token , signature );
+        req.entity = entity;
+
+        next();
+
+    }catch(err){
+        console.log(err);
+        res.status(401).json({
+            ok : false,
             mssg : 'Invalid token'
         })
     }   
@@ -203,5 +256,6 @@ module.exports = {
     validateToken,
     validateTokenClient,
     validateTokenMultiple,
-    validateTokenForgot
+    validateTokenForgot,
+    validateTokenForgotParams,
 };

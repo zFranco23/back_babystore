@@ -17,7 +17,7 @@ const supplierSchema = new Schema({
     },
     avatar : {
         type : String,
-        default :'',
+        default : process.env.IMG_DEFAULT,
     },
     store : { 
         type : Schema.Types.ObjectId,
