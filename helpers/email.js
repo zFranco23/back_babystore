@@ -23,6 +23,8 @@ const sendEmail = async (url , email) => {
                 <div>
                     <h3>Here you will find the link to reset your password.</p>
                     <p>It is an one time link, so be careful setting your new password.</p>
+
+                    <p>Please click on the following link, or paste this into your browser to complete the process :</p>
                     <p>${url}</p>
                 </div>
             `, // html body
