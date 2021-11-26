@@ -6,6 +6,7 @@ const Supplier = require('../models/supplier.model');
 const Client = require('../models/client.model');
 
 const { generateJWT } = require("../helpers/generateJWT");
+const { sendEmail } = require("../helpers/email");
 
 
 const authLogin = async ( req, res = response) => {
@@ -106,6 +107,14 @@ const forgotPassword = async ( req , res = response) => {
         
         const URL = process.env.URL_FORGOT_PASSWORD + token + '/' + entity._id;
 
+        const startSendingEmail = await sendEmail(URL, entity.email);
+
+        if(!startSendingEmail.sent) return res.status(500).json({
+            ok : false,
+            mssg : 'Error sending the email'
+        })
+
+        console.log('INFO-EMAIL: ',startSendingEmail.info);
         console.log(URL);
         res.json({
             ok : true,
