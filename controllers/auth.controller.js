@@ -44,7 +44,8 @@ const authLogin = async ( req, res = response) => {
             ok : true,
             type : collection,
             mssg : 'Authenticated',
-            token
+            token,
+            name : entity.name
         })
 
 
@@ -71,7 +72,8 @@ const authValidate = ( req , res=response) => {
 
         res.json({
             ok : true,
-            mssg :'Token autorizado'
+            mssg :'Token autorizado',
+            name : entity.name
         })
 
     }catch(err){
