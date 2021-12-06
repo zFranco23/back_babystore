@@ -37,8 +37,13 @@ const getProducts = async ( req , res=response ) => {
 const getProductOfSupplier = async ( req , res=response ) => {
     try{
 
+        const { skip=0 , limit=5 } = req.query;
+
         const idSupplier = req.supplier._id;
-        const products = await Product.find({ supplier : idSupplier}).populate('supplier','name');
+        const products = await Product.find({ supplier : idSupplier , active : true})
+                                .skip(Number(skip))
+                                .limit(Number(limit))
+                                .populate('supplier','name');
 
         
         if(products.length >0 ){
@@ -63,12 +68,12 @@ const getProductOfSupplier = async ( req , res=response ) => {
 
 const addProduct = async ( req , res = response ) => {
     try{
-        const { name , price , quantity } = req.body;
+        const { name , price , quantity ,desc } = req.body;
 
-        console.log(req.supplier);
         const supplier = req.supplier._id;
         const product = new Product({
             name,
+            desc,
             price,
             quantity,
             supplier
@@ -134,7 +139,7 @@ const changeStateProductOfSupplier = async ( req , res = response) => {
     try{
         
         const { active , available } = req.body;
-
+        const { idProduct } = req.params;
         const product = req.product;
         product.active = active;
         product.available = available;

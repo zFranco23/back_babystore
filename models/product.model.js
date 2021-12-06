@@ -10,6 +10,10 @@ const productSchema = new Schema({
         type : Number,
         default : 0,
     },
+    desc : {
+        type : String,
+        required : [ true , 'Description is required']
+    },
     quantity : {
         type : Number,
         required : [ true , 'Quantity of product is required']
@@ -25,7 +29,7 @@ const productSchema = new Schema({
     },
     img : {
         type : String,
-        default :'',
+        default : process.env.IMG_DEFAULT,
     },
     active :{
         type : Boolean,

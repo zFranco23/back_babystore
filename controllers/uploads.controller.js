@@ -42,6 +42,11 @@ const updateProfileImage = async ( req , res=response) => {
     }
 }
 
+const updateProductImage = async () => {
+
+}
+
+
 module.exports = {
     updateProfileImage
 }

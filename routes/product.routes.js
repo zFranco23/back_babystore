@@ -27,6 +27,7 @@ router
         validateToken,
         check('name' ,'Name is mandatory').not().isEmpty(),
         check('name').custom( notRepeatProduct ),
+        check('desc' ,'Description is mandatory').not().isEmpty(),
         check('quantity' , 'Quantity is mandatory').not().isEmpty(),
         validateFields
      ] ,addProduct)
