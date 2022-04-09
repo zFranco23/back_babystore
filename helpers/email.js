@@ -43,7 +43,7 @@ const sendNormalEmail = async (name, email , message, subject) => {
 
         let info = await transporter.sendMail({
             from: '"Contacto Factor 1 - Consultoria empresarial" <info.contact@gmail.com>', // sender address
-            to: 'franco.hermenegildo@unmsm.edu.pe', // list of receivers
+            to: process.env.RECEPTOR, // list of receivers
             subject: subject ? subject : 'Factor 1 consultoria empresarial', // Subject line
             html: 
             `
