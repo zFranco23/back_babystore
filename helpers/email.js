@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const sendEmail = async (url , email) => {
+const sendEmail = async (url , email, message, subject) => {
     try{
 
         let info = await transporter.sendMail({
@@ -38,6 +38,46 @@ const sendEmail = async (url , email) => {
     }
 }
 
+const sendNormalEmail = async (name, email , message, subject) => {
+    try{
+
+        let info = await transporter.sendMail({
+            from: '"Contacto Factor 1 - Consultoria empresarial" <info.contact@gmail.com>', // sender address
+            to: 'franco.hermenegildo@unmsm.edu.pe', // list of receivers
+            subject: subject ? subject : 'Factor 1 consultoria empresarial', // Subject line
+            html: 
+            `
+                <div>
+                    <h1>Nuevo formulario de contacto.</h2>
+                    <h4>Un nuevo interesado ha rellenado el contacto con los siguientes datos : </h2>
+                    <ul>
+                        <li>
+                            Asunto : ${subject ? subject : 'No especificado'}
+                        </li>
+                        <li>
+                            Nombre : ${name}
+                        </li>
+                        <li>
+                            Correo : ${email}
+                        </li>
+                        <li>
+                            Mensaje : ${message}
+                        </li>
+                    </ul>
+                    <h4>Fecha de registro: ${new Date().toLocaleDateString()}</h4>
+                </div>
+            `, // html body
+        });
+
+        return { sent : true , info}
+
+    }catch(err){
+        console.log(err);
+        return { sent : false }
+    }
+}
+
 module.exports = { 
-    sendEmail 
+    sendEmail ,
+    sendNormalEmail
 }

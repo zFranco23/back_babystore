@@ -11,7 +11,8 @@ const {
     authorizeResetPassword,
     authValidate, 
     forgotPassword,
-    resetPassword
+    resetPassword,
+    sendEmailTo
 } = require('../controllers/auth.controller');
 
 const router = Router();
@@ -55,6 +56,13 @@ router
         validateFields,
         validateTokenForgot
     ] , resetPassword ) 
+
+    .post('/email/send', [
+        check('name').not().isEmpty(),
+        check('email', 'Email is mandatory').not().isEmpty(),
+        check('email' , 'Email incorrect').isEmail(),
+        check('message' , 'Max 200 characters allowed').isLength( { max : 200}),
+    ],sendEmailTo)
 
 
 module.exports = router;

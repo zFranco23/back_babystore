@@ -9,9 +9,10 @@ const { notRepeatProduct ,existsProduct } = require('../middlewares/verifyDataba
 const { 
     addProduct , 
     getProducts, 
+    getOneProductOfSupplier,
     getProductOfSupplier, 
     updateProductOfSupplier, 
-    changeStateProductOfSupplier 
+    changeStateProductOfSupplier, 
 } = require('../controllers/product.controller');
 
 const router = Router();
@@ -22,6 +23,14 @@ router
     .get('/supplier', [
         validateToken
     ] , getProductOfSupplier)
+
+    .get('/one/:idProduct' , [
+        validateToken,
+        check('idProduct', 'That id is not valid ').isMongoId(),
+        check('idProduct').custom(existsProduct),
+        validateFields,
+        validateSupplierProduct,
+    ] , getOneProductOfSupplier)
 
     .post('/new' , [
         validateToken,

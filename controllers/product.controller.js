@@ -1,4 +1,5 @@
 const { response } = require("express");
+const { productState } = require("../helpers/constants");
 
 const Product = require('../models/product.model');
 
@@ -37,26 +38,60 @@ const getProducts = async ( req , res=response ) => {
 const getProductOfSupplier = async ( req , res=response ) => {
     try{
 
-        const { skip=0 , limit=5 } = req.query;
-
+        const { skip=0 , limit=5 , state ='A' } = req.query;
         const idSupplier = req.supplier._id;
-        const products = await Product.find({ supplier : idSupplier , active : true})
-                                .skip(Number(skip))
-                                .limit(Number(limit))
-                                .populate('supplier','name');
 
-        
-        if(products.length >0 ){
-            return res.json({ ok : true , products })
+        //Verificar el estado que desea
+        let active=true;
+        if(state === productState.ACTIVE){
+            active = true;
+        }else if (state === productState.INACTIVE){
+            active = false;
+        }else{
+            return res.status(400).json({
+                ok : false,
+                mssg : 'Incorrect state'
+            })
         }
 
+        const query = { supplier : idSupplier , active  };
+
+
+        const [ total , products ] = await Promise.all([
+            Product.countDocuments(query),
+            Product.find(query)
+            .skip(Number(skip))
+            .limit(Number(limit))
+            .populate('supplier','name')
+        ])
+
+    
         res.json({
             ok : true,
-            mssg : 'No products'
+            total,
+            products
         })
 
 
         
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            ok : false,
+            mssg : err.message
+        })
+    }
+}
+
+const getOneProductOfSupplier = async ( req , res = response) => {
+    try{
+
+        const product = req.product;
+        res.json({
+            ok : true,
+            product
+        })
+
     }catch(err){
         console.log(err);
         res.status(500).json({
@@ -163,6 +198,7 @@ const changeStateProductOfSupplier = async ( req , res = response) => {
 module.exports = {
     addProduct,
     getProducts,
+    getOneProductOfSupplier,
     getProductOfSupplier,
     updateProductOfSupplier,
     changeStateProductOfSupplier

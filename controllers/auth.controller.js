@@ -6,7 +6,7 @@ const Supplier = require('../models/supplier.model');
 const Client = require('../models/client.model');
 
 const { generateJWT } = require("../helpers/generateJWT");
-const { sendEmail } = require("../helpers/email");
+const { sendEmail, sendNormalEmail } = require("../helpers/email");
 
 
 const authLogin = async ( req, res = response) => {
@@ -194,10 +194,38 @@ const resetPassword = async ( req , res = response) => {
     }
 }
 
+const sendEmailTo = async( req, res = response) => {
+    try{
+        const startSendingEmail = await sendNormalEmail(req.body.name,req.body.email,req.body.message, req.body.subject);
+
+        if(!startSendingEmail.sent) return res.status(500).json({
+            ok : false,
+            mssg : 'Error sending the email'
+        })
+
+
+        return res.status(200).json({
+            ok : true,
+            message :'Email sent'
+        })
+
+
+        
+    }catch(err){
+        console.log(err);
+        res.status(500).json({
+            ok : false,
+            mssg : err.message
+        })
+    }
+    
+}
+
 module.exports = {
     authLogin,
     authValidate,
     authorizeResetPassword,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    sendEmailTo
 };
